@@ -1,35 +1,19 @@
 from yahoo_finance_api2 import share
 from yahoo_finance_api2.exceptions import YahooFinanceError
 import pandas as pd
-import openpyxl
-from datetime import date, datetime
+from datetime import datetime
 
 
 def get_codes(file_path):
-    skip_words = ['ETF・ETN', 'PRO Market']
-    codes = []
-
-    wb = openpyxl.load_workbook(file_path)
-    ws = wb["Sheet1"]
-    for row in ws.iter_rows(min_row=2):
-        market = str(row[3].value)
-        if (not exist_words(market, skip_words)):
-            codes.append(str(row[1].value))
-    return codes
+    f = open(file_path, 'r')
+    s = f.read()
+    return s.split()
 
 
-def exist_words(text, words):
-    exist = False
-    for word in words:
-        if (word in text):
-            exist = True
-    return exist
-
-
-codes = get_codes("kabu.xlsx")
-for code in ["6997"]:
+codes = get_codes("code.txt")
+for code in codes:
     print(code)
-    
+
     df_read = pd.read_csv(code+".csv")
     Ldatastr = df_read["datetime"].iloc[-1].split()[0]
     Ldatatime = datetime.strptime(Ldatastr, "%Y-%m-%d")
