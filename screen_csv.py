@@ -4,6 +4,7 @@ import matplotlib.dates as mdates
 
 TORELANCE = 1.05
 
+
 def get_codes(file_path):
     f = open(file_path, 'r')
     s = f.read()
