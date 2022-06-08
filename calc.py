@@ -21,10 +21,10 @@ class Stock:
 
     def profit(self, sell):
         spent = self.buy * self.amt
-        print("投資額:" + str(spent))
+        #print("投資額:" + str(spent))
         chspent = self.commission(spent)
         earns = sell * self.amt
-        print("収益:" + str(earns))
+        #print("収益:" + str(earns))
         coms = []
         coms.append(self.commission(earns))
         coms.append(self.commission(earns/2)*2)
@@ -51,5 +51,12 @@ class Stock:
         return c
 
 
-a = Stock(2358, 100)
-print(a.zero())
+Buy = input("Buy:")
+Num = input("Amount:")
+Sell = input("Sell:")
+print('-----')
+a = Stock(int(Buy), int(Num))
+zero = a.zero()
+profit = a.profit(int(Sell))
+print(f'zero: {zero:.1f}')
+print(f'profit: {profit:.1f}')
