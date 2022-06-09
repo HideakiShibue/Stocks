@@ -59,8 +59,8 @@ for code in codes:
 file = 0
 while len(matched):
     plt.clf()
-    plt.figure(figsize=(25, 10))
-    plt.subplots_adjust(wspace=0.2, hspace=0.1)  # (2)間隔指定
+    plt.figure(figsize=(40, 30))
+    plt.subplots_adjust(wspace=0.2, hspace=0.4)  # (2)間隔指定
 
     for j in range(20):
         if len(matched) == 0:
