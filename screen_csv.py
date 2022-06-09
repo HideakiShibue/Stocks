@@ -1,7 +1,7 @@
 import matplotlib.pyplot as plt
 import pandas as pd
 import matplotlib.dates as mdates
-
+import os
 TORELANCE = 1.05
 
 
@@ -20,9 +20,13 @@ def draw_chart(code):
 
 
 def create_dataframe(code):
+    if not os.path.isfile("data/" + code + ".csv"):
+        return False
     df = pd.read_csv("data/" + code + ".csv", index_col=0, parse_dates=True)
     df.index.name = 'Date'
-    print(df)
+    print(code)
+    if len(df.index) < 100:
+        return False
     Close = df["Close"]
     df["MA75"] = Close.rolling(75).mean()
     df["MA25"] = Close.rolling(25).mean()
@@ -34,7 +38,8 @@ matched = []
 codes = get_codes("code.txt")
 for code in codes:
     df = create_dataframe(code)
-
+    if df is False:
+        continue
     diff = df["MA75"].iloc[-1]/df["Close"].iloc[-1]
     if diff > TORELANCE or 1/diff > TORELANCE:
         continue
@@ -60,3 +65,4 @@ while len(matched):
         draw_chart(matched.pop())
     plt.savefig(f'chart/{file}.png')
     file += 1
+
