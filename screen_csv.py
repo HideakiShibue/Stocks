@@ -34,10 +34,17 @@ matched = []
 codes = get_codes("code.txt")
 for code in codes:
     df = create_dataframe(code)
-    flg = True
 
-    if flg is True:
-        matched.append(code)
+    diff = df["MA75"].iloc[-1]/df["Close"].iloc[-1]
+    if diff > TORELANCE or 1/diff > TORELANCE:
+        continue
+
+    current_slope = df["MA75"].iloc[-1] - df["MA75"].iloc[-2]  # 直近の上昇
+    old_slope = df["MA75"].iloc[-1] - df["MA75"].iloc[-90]  # 過去の下落
+    if current_slope < 0 or old_slope > 0:
+        continue
+
+    matched.append(code)
 
 
 # Graph
