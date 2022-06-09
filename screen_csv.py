@@ -13,7 +13,7 @@ def get_codes(file_path):
 
 def draw_chart(code):
     df = create_dataframe(code)
-    df = df.head(120)
+    df = df.tail(120)
     plt.plot(df["Close"])
     plt.plot(df["MA200"], color='red')
     plt.plot(df["MA75"], color='blue')
