@@ -2,7 +2,7 @@ import matplotlib.pyplot as plt
 import pandas as pd
 import matplotlib.dates as mdates
 import os
-TORELANCE = 1.05
+TORELANCE = 1.02
 
 
 def get_codes(file_path):
@@ -13,6 +13,7 @@ def get_codes(file_path):
 
 def draw_chart(code):
     df = create_dataframe(code)
+    df = df.head(120)
     plt.plot(df["Close"])
     plt.plot(df["MA200"], color='red')
     plt.plot(df["MA75"], color='blue')
@@ -53,11 +54,13 @@ for code in codes:
 
 
 # Graph
-plt.figure(figsize=(25, 10))
-plt.subplots_adjust(wspace=0.2, hspace=0.1)  # (2)間隔指定
 
 file = 0
 while len(matched):
+    plt.clf()
+    plt.figure(figsize=(25, 10))
+    plt.subplots_adjust(wspace=0.2, hspace=0.1)  # (2)間隔指定
+    
     for j in range(25):
         if len(matched) == 0:
             break
