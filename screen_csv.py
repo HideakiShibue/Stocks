@@ -1,7 +1,7 @@
 import matplotlib.pyplot as plt
 import pandas as pd
 import os
-TORELANCE = [1.02, 70]
+TORELANCE = [1.02, 40]
 
 
 def get_codes(file_path):
@@ -43,7 +43,7 @@ for code in codes:
         continue
     diffp = df["MA75"].iloc[-1]/df["Close"].iloc[-1]
     diffabs = df["MA75"].iloc[-1] - df["Close"].iloc[-1]
-    if diffp > TORELANCE[0] or (1/diffp) > TORELANCE[0] or diffabs > TORELANCE[1]:
+    if diffp > TORELANCE[0] or diffp < 1 or diffabs > TORELANCE[1]:
         continue
 
     current_slope = df["MA75"].iloc[-1] - df["MA75"].iloc[-2]  # 直近の上昇
