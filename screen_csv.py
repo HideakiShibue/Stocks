@@ -33,7 +33,7 @@ def draw_chart(code, i):
         addplot=adds,
         title=code,
         style='charles',
-        savefig=dict(fname="chart/"+i+'.png', dpi=100)
+        savefig=dict(fname="chart/"+str(i)+'.png', dpi=100)
     )
 
 
