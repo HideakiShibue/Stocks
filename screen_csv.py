@@ -1,6 +1,8 @@
+import shutil
 import matplotlib.pyplot as plt
 import pandas as pd
 import os
+import mplfinance as mpf
 TORELANCE = [1.02, 40]
 
 
@@ -11,27 +13,50 @@ def get_codes(file_path):
 
 
 def draw_chart(code):
+    ''' 
+        ax = [
+            fig.add_subplot(3, 1, 3),
+            fig.add_subplot(3, 1, 1, sharex=ax[2]),
+            fig.add_subplot(3, 1, 2, sharex=ax[2])
+        ]
+    '''
+        # fig.subplots_adjust(hspace=0.3)
+        # ma
     df = create_dataframe(code)
-    df = df.tail(120)
-    plt.title(code)
-    plt.plot(df["Close"])
-    plt.plot(df["MA25"], color='red')
-    plt.plot(df["MA75"], color='blue')
-    plt.gcf().autofmt_xdate()
+    if df is False:
+        return
+    Close = df["close"]
+    MA75 = Close.rolling(75).mean()
+    MA25 = Close.rolling(25).mean()
+    MA200 = Close.rolling(200).mean()
+    adds = [
+        mpf.make_addplot(MA75[-90:-1], color='b', width=1, alpha=1),
+        mpf.make_addplot(MA25[-90:-1], color='y', width=1, alpha=1)
+    ]
+    mpf.plot(
+        df.iloc[-90:-1],
+        type='candle',
+        datetime_format='%m/%d',
+        figsize=(8, 5),
+        addplot=adds,
+        title=code,
+        style='charles',
+        savefig=dict(fname=code+'.png', dpi=100)
+    )
+
+
+def delete_old_chart():
+    shutil.rmtree("chart")
 
 
 def create_dataframe(code):
-    if not os.path.isfile("data/" + code + ".csv"):
+    path = "data/" + code + ".csv"
+    if not os.path.isfile(path):
         return False
-    df = pd.read_csv("data/" + code + ".csv", index_col=0, parse_dates=True)
-    df.index.name = 'Date'
+    df = pd.read_csv(path, index_col='datetime', parse_dates=True)
     print(code)
     if len(df.index) < 180:
         return False
-    Close = df["Close"]
-    df["MA75"] = Close.rolling(75).mean()
-    df["MA25"] = Close.rolling(25).mean()
-    df["MA200"] = Close.rolling(200).mean()
     return df
 
 
@@ -41,13 +66,17 @@ for code in codes:
     df = create_dataframe(code)
     if df is False:
         continue
-    diffp = df["MA75"].iloc[-1]/df["Close"].iloc[-1]
-    diffabs = df["MA75"].iloc[-1] - df["Close"].iloc[-1]
+
+    Close = df["close"]
+    MA75 = Close.rolling(75).mean()
+
+    diffp = MA75.iloc[-1]/df["close"].iloc[-1]
+    diffabs = MA75.iloc[-1] - df["close"].iloc[-1]
     if diffp > TORELANCE[0] or diffp < 1 or diffabs > TORELANCE[1]:
         continue
 
-    current_slope = df["MA75"].iloc[-1] - df["MA75"].iloc[-2]  # 直近の上昇
-    old_slope = df["MA75"].iloc[-1] - df["MA75"].iloc[-90]  # 過去の下落
+    current_slope = MA75.iloc[-1] - MA75.iloc[-2]  # 直近の上昇
+    old_slope = MA75.iloc[-1] - MA75.iloc[-90]  # 過去の下落
     if current_slope <= 0 or old_slope >= 0:
         continue
 
@@ -55,17 +84,5 @@ for code in codes:
 
 
 # Graph
-
-file = 0
-while len(matched):
-    plt.clf()
-    plt.figure(figsize=(40, 30))
-    plt.subplots_adjust(wspace=0.2, hspace=0.4)  # (2)間隔指定
-
-    for j in range(20):
-        if len(matched) == 0:
-            break
-        plt.subplot(4, 5, j+1)  # (3)グラフ描画位置の指定
-        draw_chart(matched.pop())
-    plt.savefig(f'chart/{file}.png')
-    file += 1
+for code in matched:
+    draw_chart(code)
