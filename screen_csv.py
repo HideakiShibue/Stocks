@@ -12,16 +12,8 @@ def get_codes(file_path):
     return s.split()
 
 
-def draw_chart(code):
-    ''' 
-        ax = [
-            fig.add_subplot(3, 1, 3),
-            fig.add_subplot(3, 1, 1, sharex=ax[2]),
-            fig.add_subplot(3, 1, 2, sharex=ax[2])
-        ]
-    '''
-        # fig.subplots_adjust(hspace=0.3)
-        # ma
+def draw_chart(code, i):
+
     df = create_dataframe(code)
     if df is False:
         return
@@ -41,7 +33,7 @@ def draw_chart(code):
         addplot=adds,
         title=code,
         style='charles',
-        savefig=dict(fname=code+'.png', dpi=100)
+        savefig=dict(fname="chart/"+i+'.png', dpi=100)
     )
 
 
@@ -56,17 +48,28 @@ def create_dataframe(code):
     df = pd.read_csv(path, index_col='datetime', parse_dates=True)
     print(code)
     if len(df.index) < 180:
+        exclude.append(code)
+        return False
+    if df['volume'].iloc[-1] is None:  # no data
+        exclude.append(code)
+        return False
+    if df['volume'].iloc[-1] < 10000:  # volume too small
+        exclude.append(code)
+        return False
+    if df['close'].iloc[-1] < 40:  # price too small
+        exclude.append(code)
         return False
     return df
 
 
 matched = []
+exclude = []
 codes = get_codes("code.txt")
 for code in codes:
     df = create_dataframe(code)
     if df is False:
         continue
-
+    
     Close = df["close"]
     MA75 = Close.rolling(75).mean()
 
@@ -84,5 +87,8 @@ for code in codes:
 
 
 # Graph
-for code in matched:
-    draw_chart(code)
+for i in range(matched):
+    draw_chart(code[i], i)
+
+f = open("code_exclude.txt", "w")
+f.write("\n".join(exclude))

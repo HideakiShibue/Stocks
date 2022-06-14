@@ -74,13 +74,6 @@ def update(codes, excludes):
             'volume': symbol_data['volume']
             })
 
-        if df['volume'].iloc[-1] < 10000:  # volume too small
-            f.write(code+"\n")
-            continue
-        if df['close'].iloc[-1] < 40:  # price too small
-            f.write(code+"\n")
-            continue
-
         # if not updated
         lastdata = (df['datetime'].iloc[-1])
         today = datetime.today()
