@@ -23,10 +23,14 @@ def addHeader(code):
             csvout.writerows(access_log)
 
 
-def update(codes):
+def update(codes, excludes):
     # 出来高<10k, 株価<40, 更新>3日前を除外する
+    f = open('code_exclude.txt', 'a')
+
     while len(codes):
         code = codes.pop()
+        if code in excludes:
+            continue
         print(code)
         path = "data/" + code + ".csv"
         new = False if os.path.isfile(path) else True
@@ -71,10 +75,10 @@ def update(codes):
             })
 
         if df['volume'].iloc[-1] < 10000:  # volume too small
-            excludes.append(code)
+            f.write("\n".join(excludes))
             continue
         if df['close'].iloc[-1] < 40:  # price too small
-            excludes.append(code)
+            f.write("\n".join(excludes))
             continue
 
         # if not updated
@@ -82,7 +86,7 @@ def update(codes):
         today = datetime.today()
         delta = str(today-lastdata).split()[0]
         if int(delta) > 3:
-            excludes.append(code)
+            f.write("\n".join(excludes))
             continue
 
         # drop incomplete data
@@ -99,11 +103,10 @@ def update(codes):
 
 codes = get_codes("code.txt")
 excludes = get_codes("code_exclude.txt")
-update(codes)
+try:
+    update(codes, excludes)
+except KeyboardInterrupt:
+    update(codes, excludes)
 
-    
 # add excludes
 excludes.append("")
-f = open('code_exclude.txt', 'w')
-f.write("\n".join(excludes))
-f.close()
