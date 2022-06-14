@@ -85,10 +85,9 @@ for code in codes:
 
     matched.append(code)
 
-
-# Graph
-for i in range(matched):
-    draw_chart(code[i], i)
-
 f = open("code_exclude.txt", "w")
 f.write("\n".join(exclude))
+f.close()
+# Graph
+for i in range(len(matched)):
+    draw_chart(code[i], i)
