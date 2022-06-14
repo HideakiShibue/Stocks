@@ -75,10 +75,10 @@ def update(codes, excludes):
             })
 
         if df['volume'].iloc[-1] < 10000:  # volume too small
-            f.write("\n".join(excludes))
+            f.write(code+"\n")
             continue
         if df['close'].iloc[-1] < 40:  # price too small
-            f.write("\n".join(excludes))
+            f.write(code+"\n")
             continue
 
         # if not updated
@@ -86,7 +86,7 @@ def update(codes, excludes):
         today = datetime.today()
         delta = str(today-lastdata).split()[0]
         if int(delta) > 3:
-            f.write("\n".join(excludes))
+            f.write(code+"\n")
             continue
 
         # drop incomplete data
