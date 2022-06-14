@@ -1,8 +1,8 @@
 import shutil
-import matplotlib.pyplot as plt
 import pandas as pd
 import os
 import mplfinance as mpf
+import math
 TORELANCE = [1.02, 40]
 
 
@@ -50,7 +50,7 @@ def create_dataframe(code):
     if len(df.index) < 180:
         exclude.append(code)
         return False
-    if df['volume'].iloc[-1] is None:  # no data
+    if math.isnan(df['volume'].iloc[-1]):  # no data
         exclude.append(code)
         return False
     if df['volume'].iloc[-1] < 10000:  # volume too small
@@ -65,7 +65,7 @@ def create_dataframe(code):
 matched = []
 exclude = []
 codes = get_codes("code.txt")
-for code in codes:
+for code in ["1352"]:
     df = create_dataframe(code)
     if df is False:
         continue
