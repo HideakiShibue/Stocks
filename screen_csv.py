@@ -65,7 +65,7 @@ def create_dataframe(code):
 matched = []
 exclude = []
 codes = get_codes("code.txt")
-for code in ["1352"]:
+for code in codes:
     df = create_dataframe(code)
     if df is False:
         continue
