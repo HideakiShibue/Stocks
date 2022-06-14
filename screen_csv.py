@@ -90,4 +90,4 @@ f.write("\n".join(exclude))
 f.close()
 # Graph
 for i in range(len(matched)):
-    draw_chart(code[i], i)
+    draw_chart(matched[i], i)
