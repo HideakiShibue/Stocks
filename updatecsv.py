@@ -24,8 +24,6 @@ def addHeader(code):
 
 
 def update(codes, excludes):
-    # 出来高<10k, 株価<40, 更新>3日前を除外する
-    f = open('code_exclude.txt', 'a')
 
     while len(codes):
         code = codes.pop()
@@ -41,7 +39,6 @@ def update(codes, excludes):
             Ldatatime = datetime.strptime(Ldatastr, "%Y-%m-%d")
             today = datetime.today()
             delta = int(str(today-Ldatatime).split()[0])
-            print(delta)
 
         my_share = share.Share(code + ".T")
         symbol_data = None
@@ -52,7 +49,7 @@ def update(codes, excludes):
                     share.PERIOD_TYPE_MONTH, 30,
                     share.FREQUENCY_TYPE_DAY, 1
                 )
-            elif delta > 0:
+            elif delta > 1:
                 symbol_data = my_share.get_historical(
                     share.PERIOD_TYPE_DAY, delta,
                     share.FREQUENCY_TYPE_DAY, 1
@@ -76,11 +73,6 @@ def update(codes, excludes):
 
         # if not updated
         lastdata = (df['datetime'].iloc[-1])
-        today = datetime.today()
-        delta = str(today-lastdata).split()[0]
-        if int(delta) > 3:
-            f.write(code+"\n")
-            continue
 
         # drop incomplete data
         time = str(lastdata).split()
