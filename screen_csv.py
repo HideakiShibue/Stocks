@@ -46,7 +46,6 @@ def create_dataframe(code):
     if not os.path.isfile(path):
         return False
     df = pd.read_csv(path, index_col='datetime', parse_dates=True)
-    print(code)
     if len(df.index) < 180:
         exclude.append(code)
         return False
