@@ -5,7 +5,9 @@ import pandas as pd
 from datetime import datetime
 import csv
 
-
+'''
+code.txtから銘柄コード一覧を取得
+'''
 def get_codes(file_path):
     f = open(file_path, 'r')
     s = f.read()
