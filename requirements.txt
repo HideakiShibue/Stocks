@@ -1,0 +1,5 @@
+mplfinance==0.12.9b1
+numpy==1.23.0
+openpyxl==3.0.10
+pandas==1.4.3
+yahoo-finance-api2==0.0.12
