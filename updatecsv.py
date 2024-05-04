@@ -48,7 +48,7 @@ def update(codes, excludes):
         try:
             if new:
                 symbol_data = my_share.get_historical(
-                    share.PERIOD_TYPE_MONTH, 30,
+                    share.PERIOD_TYPE_YEAR, 10,
                     share.FREQUENCY_TYPE_DAY, 1
                 )
             elif delta > 1:
